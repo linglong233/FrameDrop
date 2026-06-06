@@ -1,0 +1,14 @@
+{"t":0,"agent":"aa721e2","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ac2e053","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ab37e0e","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ac7542e","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ae480dd","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a097bf1","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"adc2c0d","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ab596e9","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a876253","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a25060c","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ad9d2cd","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"ad0d888","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"superpowers:writing-plans"}
+{"t":0,"agent":"system","event":"skill_invoked","skill_name":"superpowers:subagent-driven-development"}

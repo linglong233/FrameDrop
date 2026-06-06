@@ -1,0 +1,7 @@
+{
+  "tool_name": "Bash",
+  "tool_input_preview": "{\"command\":\"pip install -r requirements.txt 2>&1 | Select-Object -Last 5\",\"description\":\"Install project dependencies\"}",
+  "error": "Exit code 127\n/usr/bin/bash: line 1: Select-Object: command not found",
+  "timestamp": "2026-06-06T11:57:34.352Z",
+  "retry_count": 1
+}
