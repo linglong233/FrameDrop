@@ -180,10 +180,10 @@ class MainWindow(QMainWindow):
         self.spin_extract_interval.setValue(0.2)
         self.spin_extract_interval.setSingleStep(0.1)
         self.spin_extract_interval.setDecimals(1)
-        self.spin_extract_interval.setSuffix(" 秒")
-        self.spin_extract_interval.setFixedWidth(90)
+        self.spin_extract_interval.setFixedWidth(110)
         self.spin_extract_interval.valueChanged.connect(self._on_spin_interval_changed)
-        interval_row.addWidget(self.spin_extract_interval, stretch=1)
+        interval_row.addWidget(self.spin_extract_interval)
+        interval_row.addWidget(QLabel("秒"))
         controls.addLayout(interval_row)
 
         controls.addSpacing(8)
