@@ -13,3 +13,5 @@
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"superpowers:writing-plans"}
 {"t":0,"agent":"system","event":"skill_invoked","skill_name":"superpowers:subagent-driven-development"}
 {"t":0,"agent":"aeb0dba","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a323324","agent_type":"unknown","event":"agent_stop","success":true}
+{"t":0,"agent":"a287f97","agent_type":"unknown","event":"agent_stop","success":true}
