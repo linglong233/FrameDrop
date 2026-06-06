@@ -112,9 +112,26 @@ class MainWindow(QMainWindow):
                 background: #3d5af1; border-radius: 8px;
             }
             QDoubleSpinBox {
-                background-color: #3a3a52; color: #ddd;
-                border: 1px solid #555; border-radius: 4px;
-                padding: 4px 8px; font-size: 14px;
+                background-color: #3a3a52; color: #fff;
+                border: 1px solid #555; border-radius: 6px;
+                padding: 6px 10px; font-size: 15px;
+                selection-background-color: #3d5af1;
+            }
+            QDoubleSpinBox::up-button, QDoubleSpinBox::down-button {
+                background-color: #4a4a6a; border: none; width: 28px;
+            }
+            QDoubleSpinBox::up-button:hover, QDoubleSpinBox::down-button:hover {
+                background-color: #3d5af1;
+            }
+            QDoubleSpinBox::up-arrow {
+                image: none; border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-bottom: 6px solid #ccc; width: 0; height: 0;
+            }
+            QDoubleSpinBox::down-arrow {
+                image: none; border-left: 5px solid transparent;
+                border-right: 5px solid transparent;
+                border-top: 6px solid #ccc; width: 0; height: 0;
             }
             QProgressBar {
                 border: none; border-radius: 3px;
@@ -151,14 +168,23 @@ class MainWindow(QMainWindow):
 
         # Extraction interval
         controls.addWidget(QLabel("抽取间隔 (每隔多少秒抽1帧):"))
+        interval_row = QHBoxLayout()
+        self.slider_interval = QSlider(Qt.Horizontal)
+        self.slider_interval.setRange(1, 3000)
+        self.slider_interval.setValue(2)
+        self.slider_interval.valueChanged.connect(self._on_slider_interval_changed)
+        interval_row.addWidget(self.slider_interval, stretch=3)
+
         self.spin_extract_interval = QDoubleSpinBox()
         self.spin_extract_interval.setRange(0.1, 300.0)
         self.spin_extract_interval.setValue(0.2)
         self.spin_extract_interval.setSingleStep(0.1)
         self.spin_extract_interval.setDecimals(1)
         self.spin_extract_interval.setSuffix(" 秒")
-        self.spin_extract_interval.valueChanged.connect(self._on_extract_fps_changed)
-        controls.addWidget(self.spin_extract_interval)
+        self.spin_extract_interval.setFixedWidth(90)
+        self.spin_extract_interval.valueChanged.connect(self._on_spin_interval_changed)
+        interval_row.addWidget(self.spin_extract_interval, stretch=1)
+        controls.addLayout(interval_row)
 
         controls.addSpacing(8)
 
@@ -308,7 +334,18 @@ class MainWindow(QMainWindow):
 
     # --- Slider callbacks ---
 
-    def _on_extract_fps_changed(self, value: float):
+    def _on_slider_interval_changed(self, value: int):
+        val = value / 10.0
+        self.spin_extract_interval.blockSignals(True)
+        self.spin_extract_interval.setValue(val)
+        self.spin_extract_interval.blockSignals(False)
+        if self._video_path and self._video_info:
+            self._extract_frames()
+
+    def _on_spin_interval_changed(self, value: float):
+        self.slider_interval.blockSignals(True)
+        self.slider_interval.setValue(int(value * 10))
+        self.slider_interval.blockSignals(False)
         if self._video_path and self._video_info:
             self._extract_frames()
 
