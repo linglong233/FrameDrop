@@ -4,6 +4,8 @@ __pycache__/
 temp/
 output.*
 docs/
+.omc/
+CLAUDE.md
 *.egg-info/
 dist/
 build/

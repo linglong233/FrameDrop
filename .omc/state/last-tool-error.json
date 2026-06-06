@@ -1,7 +1,0 @@
-{
-  "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"powershell -Command \\\"ffmpeg -version\\\"\",\"description\":\"Check FFmpeg via PowerShell\"}",
-  "error": "Exit code 1\nffmpeg : �޷�����ffmpeg����ʶ��Ϊ cmdlet���������ű��ļ�������г�������ơ��������Ƶ�ƴд���������·������ȷ��·����ȷ��\r\nȻ������һ�Ρ�\r\n����λ�� ��:1 �ַ�: 1\r\n+ ffmpeg -version\r\n+ ~~~~~~\r\n    + CategoryInfo          : ObjectNotFound: (ffmpeg:String) [], CommandNotFoundException\r\n    + FullyQualifiedErrorId : CommandNotFoundException",
-  "timestamp": "2026-06-06T12:14:48.709Z",
-  "retry_count": 5
-}
