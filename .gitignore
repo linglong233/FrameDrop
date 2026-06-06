@@ -2,6 +2,7 @@ __pycache__/
 *.pyc
 .pytest_cache/
 temp/
+output.*
 *.egg-info/
 dist/
 build/
