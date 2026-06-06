@@ -1,6 +1,8 @@
 import sys
 import shutil
+import os
 
+from PySide6.QtGui import QPixmap, QIcon
 from PySide6.QtWidgets import QApplication, QMessageBox
 
 from ui.main_window import MainWindow
@@ -9,6 +11,10 @@ from ui.main_window import MainWindow
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("FrameDrop")
+
+    icon_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "logo.png")
+    if os.path.exists(icon_path):
+        app.setWindowIcon(QIcon(icon_path))
 
     if not shutil.which("ffmpeg"):
         QMessageBox.critical(

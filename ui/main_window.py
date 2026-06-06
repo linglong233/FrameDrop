@@ -3,6 +3,7 @@ import shutil
 import sys
 
 from PySide6.QtCore import Qt, QThread, Signal
+from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import (
     QButtonGroup,
     QDoubleSpinBox,
@@ -76,6 +77,11 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("FrameDrop - 定格动画工具")
+        icon_path = os.path.join(
+            os.path.dirname(os.path.abspath(sys.argv[0])), "logo.png"
+        )
+        if os.path.exists(icon_path):
+            self.setWindowIcon(QIcon(icon_path))
         self.setMinimumSize(900, 600)
         self.setAcceptDrops(True)
 
