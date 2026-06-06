@@ -172,7 +172,7 @@ class MainWindow(QMainWindow):
         self.slider_fps.valueChanged.connect(self._on_fps_changed)
         controls.addWidget(self.slider_fps)
 
-        self.lbl_fps = QLabel("8 FPS")
+        self.lbl_fps = QLabel("4 FPS")
         controls.addWidget(self.lbl_fps)
 
         controls.addSpacing(16)
