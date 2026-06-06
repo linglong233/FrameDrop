@@ -145,7 +145,7 @@ class MainWindow(QMainWindow):
         # Extraction FPS
         controls.addWidget(QLabel("抽取帧率 (帧/秒):"))
         self.spin_extract_fps = QDoubleSpinBox()
-        self.spin_extract_fps.setRange(0.5, 120.0)
+        self.spin_extract_fps.setRange(0.1, 120.0)
         self.spin_extract_fps.setValue(2.0)
         self.spin_extract_fps.setSingleStep(0.5)
         self.spin_extract_fps.setDecimals(1)
