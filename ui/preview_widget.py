@@ -191,7 +191,7 @@ class PreviewWidget(QWidget):
             return
         cur = _format_time(self._current_idx / self._fps)
         dur = _format_time(total / self._fps)
-        self._lbl_time.setText(f"{cur} / {dur}")
+        self._lbl_time.setText(f"{cur}s / {dur}s")
 
     # --- Resize ---
 
