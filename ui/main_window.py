@@ -1,4 +1,5 @@
 import os
+import shutil
 import sys
 
 from PySide6.QtCore import Qt, QThread, Signal
@@ -85,6 +86,10 @@ class MainWindow(QMainWindow):
         self._current_extract_dir: str | None = None
         self._extraction_worker: ExtractionWorker | None = None
         self._export_worker: ExportWorker | None = None
+
+        # Clean stale cache from previous sessions
+        if os.path.exists(self._cache_dir):
+            shutil.rmtree(self._cache_dir, ignore_errors=True)
 
         self._setup_ui()
 
