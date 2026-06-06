@@ -339,6 +339,15 @@ class MainWindow(QMainWindow):
 
     # --- Cleanup ---
 
+    def closeEvent(self, event):
+        if self._extraction_worker and self._extraction_worker.isRunning():
+            self._extraction_worker.terminate()
+            self._extraction_worker.wait()
+        if self._export_worker and self._export_worker.isRunning():
+            self._export_worker.terminate()
+            self._export_worker.wait()
+        super().closeEvent(event)
+
     def cleanup(self):
         try:
             for f in os.listdir(self._cache_dir):
