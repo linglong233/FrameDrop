@@ -4,6 +4,7 @@ import sys
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
     QButtonGroup,
+    QDoubleSpinBox,
     QFileDialog,
     QHBoxLayout,
     QLabel,
@@ -29,10 +30,11 @@ class ExtractionWorker(QThread):
     finished = Signal(list)
     error = Signal(str)
 
-    def __init__(self, video_path: str, interval: int, output_dir: str):
+    def __init__(self, video_path: str, video_fps: float,
+                 extraction_fps: float, output_dir: str):
         super().__init__()
         self.video_path = video_path
-        self.interval = interval
+        self.interval = max(1, round(video_fps / extraction_fps))
         self.output_dir = output_dir
 
     def run(self):
@@ -102,6 +104,11 @@ class MainWindow(QMainWindow):
                 width: 16px; height: 16px; margin: -5px 0;
                 background: #3d5af1; border-radius: 8px;
             }
+            QDoubleSpinBox {
+                background-color: #3a3a52; color: #ddd;
+                border: 1px solid #555; border-radius: 4px;
+                padding: 4px 8px; font-size: 14px;
+            }
             QProgressBar {
                 border: none; border-radius: 3px;
                 background: #444; text-align: center; color: white;
@@ -135,18 +142,16 @@ class MainWindow(QMainWindow):
 
         controls.addSpacing(16)
 
-        # Interval
-        controls.addWidget(QLabel("抽帧间隔:"))
-        self.slider_interval = QSlider(Qt.Horizontal)
-        self.slider_interval.setRange(1, 30)
-        self.slider_interval.setValue(2)
-        self.slider_interval.setTickPosition(QSlider.TicksBelow)
-        self.slider_interval.setTickInterval(1)
-        self.slider_interval.valueChanged.connect(self._on_interval_changed)
-        controls.addWidget(self.slider_interval)
-
-        self.lbl_interval = QLabel("每 2 帧取 1 帧")
-        controls.addWidget(self.lbl_interval)
+        # Extraction FPS
+        controls.addWidget(QLabel("抽取帧率 (帧/秒):"))
+        self.spin_extract_fps = QDoubleSpinBox()
+        self.spin_extract_fps.setRange(0.5, 120.0)
+        self.spin_extract_fps.setValue(2.0)
+        self.spin_extract_fps.setSingleStep(0.5)
+        self.spin_extract_fps.setDecimals(1)
+        self.spin_extract_fps.setSuffix(" FPS")
+        self.spin_extract_fps.valueChanged.connect(self._on_extract_fps_changed)
+        controls.addWidget(self.spin_extract_fps)
 
         controls.addSpacing(8)
 
@@ -261,7 +266,8 @@ class MainWindow(QMainWindow):
 
         self._extraction_worker = ExtractionWorker(
             self._video_path,
-            self.slider_interval.value(),
+            self._video_info.fps,
+            self.spin_extract_fps.value(),
             self._cache_dir,
         )
         self._extraction_worker.finished.connect(self._on_extraction_done)
@@ -287,9 +293,8 @@ class MainWindow(QMainWindow):
 
     # --- Slider callbacks ---
 
-    def _on_interval_changed(self, value: int):
-        self.lbl_interval.setText(f"每 {value} 帧取 1 帧")
-        if self._video_path:
+    def _on_extract_fps_changed(self, value: float):
+        if self._video_path and self._video_info:
             self._extract_frames()
 
     def _on_fps_changed(self, value: int):
