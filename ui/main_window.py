@@ -238,14 +238,25 @@ class MainWindow(QMainWindow):
 
     # --- Extraction ---
 
-    def _clear_cache(self):
-        for f in os.listdir(self._cache_dir):
-            os.remove(os.path.join(self._cache_dir, f))
+    def _rotate_cache(self):
+        self.preview.stop()
+        old_dir = self._cache_dir
+        self._cache_dir = tempfile.mkdtemp(prefix="framedrop_")
+        # Try cleaning old dir; ignore if files are still locked
+        try:
+            for f in os.listdir(old_dir):
+                try:
+                    os.remove(os.path.join(old_dir, f))
+                except OSError:
+                    pass
+            os.rmdir(old_dir)
+        except OSError:
+            pass
 
     def _extract_frames(self):
         if not self._video_path:
             return
-        self._clear_cache()
+        self._rotate_cache()
         self.btn_import.setEnabled(False)
         self.btn_export.setEnabled(False)
         self.progress.setRange(0, 0)
@@ -328,7 +339,12 @@ class MainWindow(QMainWindow):
     # --- Cleanup ---
 
     def cleanup(self):
-        if os.path.exists(self._cache_dir):
+        try:
             for f in os.listdir(self._cache_dir):
-                os.remove(os.path.join(self._cache_dir, f))
+                try:
+                    os.remove(os.path.join(self._cache_dir, f))
+                except OSError:
+                    pass
             os.rmdir(self._cache_dir)
+        except OSError:
+            pass
