@@ -401,6 +401,14 @@ class MainWindow(QMainWindow):
         )
         if not path:
             return
+        if os.path.exists(path):
+            reply = QMessageBox.question(
+                self, "确认覆盖",
+                f"文件已存在:\n{path}\n是否覆盖？",
+                QMessageBox.Yes | QMessageBox.No, QMessageBox.No,
+            )
+            if reply != QMessageBox.Yes:
+                return
 
         self.btn_export.setEnabled(False)
         self.progress.setRange(0, 0)
