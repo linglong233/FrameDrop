@@ -1,5 +1,5 @@
 import os
-import tempfile
+import sys
 
 from PySide6.QtCore import Qt, QThread, Signal
 from PySide6.QtWidgets import (
@@ -21,6 +21,8 @@ from PySide6.QtWidgets import (
 from core.extractor import FrameExtractor
 from core.exporter import VideoExporter
 from ui.preview_widget import PreviewWidget
+
+_CACHE_DIR = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "temp")
 
 
 class ExtractionWorker(QThread):
@@ -76,7 +78,7 @@ class MainWindow(QMainWindow):
         self._video_path: str | None = None
         self._video_info = None
         self._frame_paths: list[str] = []
-        self._cache_dir = tempfile.mkdtemp(prefix="framedrop_")
+        self._cache_dir = _CACHE_DIR
         self._extraction_worker: ExtractionWorker | None = None
         self._export_worker: ExportWorker | None = None
 
@@ -240,18 +242,12 @@ class MainWindow(QMainWindow):
 
     def _rotate_cache(self):
         self.preview.stop()
-        old_dir = self._cache_dir
-        self._cache_dir = tempfile.mkdtemp(prefix="framedrop_")
-        # Try cleaning old dir; ignore if files are still locked
-        try:
-            for f in os.listdir(old_dir):
-                try:
-                    os.remove(os.path.join(old_dir, f))
-                except OSError:
-                    pass
-            os.rmdir(old_dir)
-        except OSError:
-            pass
+        os.makedirs(self._cache_dir, exist_ok=True)
+        for f in os.listdir(self._cache_dir):
+            try:
+                os.remove(os.path.join(self._cache_dir, f))
+            except OSError:
+                pass
 
     def _extract_frames(self):
         if not self._video_path:
