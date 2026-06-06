@@ -1,7 +1,7 @@
 {
   "tool_name": "Bash",
-  "tool_input_preview": "{\"command\":\"pip install -r requirements.txt 2>&1 | Select-Object -Last 5\",\"description\":\"Install project dependencies\"}",
-  "error": "Exit code 127\n/usr/bin/bash: line 1: Select-Object: command not found",
-  "timestamp": "2026-06-06T11:57:34.352Z",
+  "tool_input_preview": "{\"command\":\"cd D:/Project/FrameDrop && python -m pytest tests/test_extractor.py -v\",\"description\":\"Run FrameExtractor tests\"}",
+  "error": "Exit code 1\n============================= test session starts =============================\r\nplatform win32 -- Python 3.12.6, pytest-9.0.3, pluggy-1.6.0 -- C:\\Program Files\\Python\\python.exe\r\ncachedir: .pytest_cache\r\nrootdir: D:\\Project\\FrameDrop\r\nplugins: anyio-4.13.0, asyncio-1.3.0\r\nasyncio: mode=Mode.STRICT, debug=False, asyncio_default_fixture_loop_scope=None, asyncio_default_test_loop_scope=function\r\ncollecting ... collected 5 items\r\n\r\ntests/test_extractor.py::TestGetInfo::test_returns_vide...",
+  "timestamp": "2026-06-06T11:59:53.806Z",
   "retry_count": 1
 }
