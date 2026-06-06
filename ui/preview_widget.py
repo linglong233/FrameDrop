@@ -25,7 +25,7 @@ class PreviewWidget(QWidget):
 
     def __init__(self, parent=None):
         super().__init__(parent)
-        self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Expanding)
+        self.setFocusPolicy(Qt.StrongFocus)
         self.setMinimumSize(480, 360)
 
         self._pixmaps: list[QPixmap] = []
@@ -192,6 +192,27 @@ class PreviewWidget(QWidget):
         cur = _format_time(self._current_idx / self._fps)
         dur = _format_time(total / self._fps)
         self._lbl_time.setText(f"{cur}s / {dur}s")
+
+    # --- Keyboard ---
+
+    def keyPressEvent(self, event):
+        if not self._pixmaps or self._fps == 0:
+            return super().keyPressEvent(event)
+        step = max(1, self._fps)  # 1 second worth of frames
+        if event.key() == Qt.Key_Left:
+            self._seek_to(max(0, self._current_idx - step))
+        elif event.key() == Qt.Key_Right:
+            self._seek_to(min(len(self._pixmaps) - 1, self._current_idx + step))
+        else:
+            super().keyPressEvent(event)
+
+    def _seek_to(self, idx: int):
+        self._current_idx = idx
+        self._slider.blockSignals(True)
+        self._slider.setValue(idx)
+        self._slider.blockSignals(False)
+        self._display_frame(idx)
+        self._update_time_label()
 
     # --- Resize ---
 
