@@ -11,6 +11,13 @@ from ui.main_window import MainWindow
 def main():
     app = QApplication(sys.argv)
     app.setApplicationName("FrameDrop")
+    app.setStyleSheet("""
+        QMessageBox { background-color: #2b2b3d; }
+        QMessageBox QLabel { color: #ddd; }
+        QPushButton { background-color: #3d5af1; color: white;
+            border: none; border-radius: 6px; padding: 6px 16px; min-width: 80px; }
+        QPushButton:hover { background-color: #2a4ad1; }
+    """)
 
     icon_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "logo.png")
     if os.path.exists(icon_path):
