@@ -31,10 +31,10 @@ class ExtractionWorker(QThread):
     error = Signal(str)
 
     def __init__(self, video_path: str, video_fps: float,
-                 extraction_fps: float, output_dir: str):
+                 interval_seconds: float, output_dir: str):
         super().__init__()
         self.video_path = video_path
-        self.interval = max(1, round(video_fps / extraction_fps))
+        self.interval = max(1, round(video_fps * interval_seconds))
         self.output_dir = output_dir
 
     def run(self):
@@ -142,16 +142,16 @@ class MainWindow(QMainWindow):
 
         controls.addSpacing(16)
 
-        # Extraction FPS
-        controls.addWidget(QLabel("抽取帧率 (帧/秒):"))
-        self.spin_extract_fps = QDoubleSpinBox()
-        self.spin_extract_fps.setRange(0.1, 120.0)
-        self.spin_extract_fps.setValue(2.0)
-        self.spin_extract_fps.setSingleStep(0.5)
-        self.spin_extract_fps.setDecimals(1)
-        self.spin_extract_fps.setSuffix(" FPS")
-        self.spin_extract_fps.valueChanged.connect(self._on_extract_fps_changed)
-        controls.addWidget(self.spin_extract_fps)
+        # Extraction interval
+        controls.addWidget(QLabel("抽取间隔 (每隔多少秒抽1帧):"))
+        self.spin_extract_interval = QDoubleSpinBox()
+        self.spin_extract_interval.setRange(0.1, 300.0)
+        self.spin_extract_interval.setValue(0.5)
+        self.spin_extract_interval.setSingleStep(0.1)
+        self.spin_extract_interval.setDecimals(1)
+        self.spin_extract_interval.setSuffix(" 秒")
+        self.spin_extract_interval.valueChanged.connect(self._on_extract_fps_changed)
+        controls.addWidget(self.spin_extract_interval)
 
         controls.addSpacing(8)
 
@@ -267,7 +267,7 @@ class MainWindow(QMainWindow):
         self._extraction_worker = ExtractionWorker(
             self._video_path,
             self._video_info.fps,
-            self.spin_extract_fps.value(),
+            self.spin_extract_interval.value(),
             self._cache_dir,
         )
         self._extraction_worker.finished.connect(self._on_extraction_done)
