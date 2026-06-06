@@ -81,6 +81,8 @@ class MainWindow(QMainWindow):
         self._video_info = None
         self._frame_paths: list[str] = []
         self._cache_dir = _CACHE_DIR
+        self._extract_seq = 0
+        self._current_extract_dir: str | None = None
         self._extraction_worker: ExtractionWorker | None = None
         self._export_worker: ExportWorker | None = None
 
@@ -245,19 +247,17 @@ class MainWindow(QMainWindow):
 
     # --- Extraction ---
 
-    def _rotate_cache(self):
-        self.preview.stop()
-        os.makedirs(self._cache_dir, exist_ok=True)
-        for f in os.listdir(self._cache_dir):
-            try:
-                os.remove(os.path.join(self._cache_dir, f))
-            except OSError:
-                pass
+    def _next_extract_dir(self) -> str:
+        self._extract_seq += 1
+        path = os.path.join(self._cache_dir, str(self._extract_seq))
+        os.makedirs(path, exist_ok=True)
+        return path
 
     def _extract_frames(self):
         if not self._video_path:
             return
-        self._rotate_cache()
+        self.preview.stop()
+        self._current_extract_dir = self._next_extract_dir()
         self.btn_import.setEnabled(False)
         self.btn_export.setEnabled(False)
         self.progress.setRange(0, 0)
@@ -268,7 +268,7 @@ class MainWindow(QMainWindow):
             self._video_path,
             self._video_info.fps,
             self.spin_extract_interval.value(),
-            self._cache_dir,
+            self._current_extract_dir,
         )
         self._extraction_worker.finished.connect(self._on_extraction_done)
         self._extraction_worker.error.connect(self._on_extraction_error)
@@ -320,7 +320,7 @@ class MainWindow(QMainWindow):
         self.status_bar.showMessage("正在导出...")
 
         self._export_worker = ExportWorker(
-            self._cache_dir, path, self.slider_fps.value(), fmt,
+            self._current_extract_dir, path, self.slider_fps.value(), fmt,
         )
         self._export_worker.finished.connect(self._on_export_done)
         self._export_worker.error.connect(self._on_export_error)
@@ -349,12 +349,8 @@ class MainWindow(QMainWindow):
         super().closeEvent(event)
 
     def cleanup(self):
+        import shutil
         try:
-            for f in os.listdir(self._cache_dir):
-                try:
-                    os.remove(os.path.join(self._cache_dir, f))
-                except OSError:
-                    pass
-            os.rmdir(self._cache_dir)
+            shutil.rmtree(self._cache_dir, ignore_errors=True)
         except OSError:
             pass
