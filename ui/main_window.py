@@ -15,6 +15,7 @@ from PySide6.QtWidgets import (
     QPushButton,
     QRadioButton,
     QSlider,
+    QSpinBox,
     QStatusBar,
     QVBoxLayout,
     QWidget,
@@ -133,6 +134,28 @@ class MainWindow(QMainWindow):
                 border-right: 5px solid transparent;
                 border-top: 6px solid #ccc; width: 0; height: 0;
             }
+            QSpinBox {
+                background-color: #3a3a52; color: #fff;
+                border: 1px solid #555; border-radius: 6px;
+                padding: 6px 10px; font-size: 15px;
+                selection-background-color: #3d5af1;
+            }
+            QSpinBox::up-button, QSpinBox::down-button {
+                background-color: #4a4a6a; border: none; width: 20px;
+            }
+            QSpinBox::up-button:hover, QSpinBox::down-button:hover {
+                background-color: #3d5af1;
+            }
+            QSpinBox::up-arrow {
+                image: none; border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-bottom: 5px solid #ccc; width: 0; height: 0;
+            }
+            QSpinBox::down-arrow {
+                image: none; border-left: 4px solid transparent;
+                border-right: 4px solid transparent;
+                border-top: 5px solid #ccc; width: 0; height: 0;
+            }
             QProgressBar {
                 border: none; border-radius: 3px;
                 background: #444; text-align: center; color: white;
@@ -190,16 +213,21 @@ class MainWindow(QMainWindow):
 
         # FPS
         controls.addWidget(QLabel("目标帧率:"))
+        fps_row = QHBoxLayout()
         self.slider_fps = QSlider(Qt.Horizontal)
         self.slider_fps.setRange(1, 30)
         self.slider_fps.setValue(4)
-        self.slider_fps.setTickPosition(QSlider.TicksBelow)
-        self.slider_fps.setTickInterval(1)
-        self.slider_fps.valueChanged.connect(self._on_fps_changed)
-        controls.addWidget(self.slider_fps)
+        self.slider_fps.valueChanged.connect(self._on_slider_fps_changed)
+        fps_row.addWidget(self.slider_fps, stretch=3)
 
-        self.lbl_fps = QLabel("4 FPS")
-        controls.addWidget(self.lbl_fps)
+        self.spin_fps = QSpinBox()
+        self.spin_fps.setRange(1, 30)
+        self.spin_fps.setValue(4)
+        self.spin_fps.setFixedWidth(70)
+        self.spin_fps.valueChanged.connect(self._on_spin_fps_changed)
+        fps_row.addWidget(self.spin_fps)
+        fps_row.addWidget(QLabel("FPS"))
+        controls.addLayout(fps_row)
 
         controls.addSpacing(16)
 
@@ -349,8 +377,16 @@ class MainWindow(QMainWindow):
         if self._video_path and self._video_info:
             self._extract_frames()
 
-    def _on_fps_changed(self, value: int):
-        self.lbl_fps.setText(f"{value} FPS")
+    def _on_slider_fps_changed(self, value: int):
+        self.spin_fps.blockSignals(True)
+        self.spin_fps.setValue(value)
+        self.spin_fps.blockSignals(False)
+        self.preview.update_fps(value)
+
+    def _on_spin_fps_changed(self, value: int):
+        self.slider_fps.blockSignals(True)
+        self.slider_fps.setValue(value)
+        self.slider_fps.blockSignals(False)
         self.preview.update_fps(value)
 
     # --- Export ---
