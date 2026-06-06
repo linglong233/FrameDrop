@@ -209,6 +209,14 @@ class MainWindow(QMainWindow):
         self.setStatusBar(self.status_bar)
         self.status_bar.showMessage("就绪")
 
+    def _clear_all_cache(self):
+        self.preview.stop()
+        if os.path.exists(self._cache_dir):
+            shutil.rmtree(self._cache_dir, ignore_errors=True)
+        self._extract_seq = 0
+        self._current_extract_dir = None
+        self._frame_paths = []
+
     # --- Drag & Drop ---
 
     def dragEnterEvent(self, event):
@@ -221,6 +229,7 @@ class MainWindow(QMainWindow):
         path = event.mimeData().urls()[0].toLocalFile()
         if not self._try_open_video(path):
             return
+        self._clear_all_cache()
         self._video_path = path
         self.lbl_filename.setText(os.path.basename(path))
         self._extract_frames()
@@ -236,6 +245,7 @@ class MainWindow(QMainWindow):
             return
         if not self._try_open_video(path):
             return
+        self._clear_all_cache()
         self._video_path = path
         self.lbl_filename.setText(os.path.basename(path))
         self._extract_frames()
