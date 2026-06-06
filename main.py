@@ -14,7 +14,12 @@ def main():
 
     icon_path = os.path.join(os.path.dirname(os.path.abspath(sys.argv[0])), "logo.png")
     if os.path.exists(icon_path):
-        app.setWindowIcon(QIcon(icon_path))
+        icon = QIcon(icon_path)
+        app.setWindowIcon(icon)
+
+    if sys.platform == "win32":
+        import ctypes
+        ctypes.windll.shell32.SetCurrentProcessExplicitAppUserModelID("FrameDrop")
 
     if not shutil.which("ffmpeg"):
         QMessageBox.critical(
