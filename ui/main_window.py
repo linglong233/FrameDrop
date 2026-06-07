@@ -242,12 +242,15 @@ class MainWindow(QMainWindow):
         fmt_layout = QHBoxLayout()
         self.radio_mp4 = QRadioButton("MP4")
         self.radio_gif = QRadioButton("GIF")
+        self.radio_png = QRadioButton("PNG 序列")
         self.radio_mp4.setChecked(True)
         fmt_group = QButtonGroup(self)
         fmt_group.addButton(self.radio_mp4)
         fmt_group.addButton(self.radio_gif)
+        fmt_group.addButton(self.radio_png)
         fmt_layout.addWidget(self.radio_mp4)
         fmt_layout.addWidget(self.radio_gif)
+        fmt_layout.addWidget(self.radio_png)
         controls.addLayout(fmt_layout)
 
         controls.addSpacing(8)
@@ -400,6 +403,30 @@ class MainWindow(QMainWindow):
     def _export(self):
         if not self._frame_paths:
             return
+
+        # PNG sequence: copy frames to user-selected folder
+        if self.radio_png.isChecked():
+            folder = QFileDialog.getExistingDirectory(self, "选择导出文件夹")
+            if not folder:
+                return
+            target = os.path.join(folder, "frames")
+            if os.path.exists(target):
+                reply = QMessageBox.question(
+                    self, "确认覆盖",
+                    f"文件夹已存在:\n{target}\n是否覆盖其中的文件？",
+                    QMessageBox.Yes | QMessageBox.No, QMessageBox.No,
+                )
+                if reply != QMessageBox.Yes:
+                    return
+            os.makedirs(target, exist_ok=True)
+            for f in os.listdir(self._current_extract_dir):
+                src = os.path.join(self._current_extract_dir, f)
+                dst = os.path.join(target, f)
+                shutil.copy2(src, dst)
+            self.status_bar.showMessage(f"导出完成: {target}")
+            QMessageBox.information(self, "完成", f"PNG 序列导出成功!\n{target}")
+            return
+
         fmt = "mp4" if self.radio_mp4.isChecked() else "gif"
         ext_filter = "MP4 (*.mp4)" if fmt == "mp4" else "GIF (*.gif)"
         path, _ = QFileDialog.getSaveFileName(
